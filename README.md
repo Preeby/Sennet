@@ -14,3 +14,9 @@ sudo ./install.sh
 ```
 
 The install script should do everything automatically, if not tell me!
+
+After installing, run 
+```
+sennet
+```
+to get help!
