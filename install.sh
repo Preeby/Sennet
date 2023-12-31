@@ -86,6 +86,7 @@ detect_distribution
 
 # List of dependencies
 dependencies=('nmap' 'hping' 'dnsutils')
+# Install these if it doesn't automatically!
 
 for dep in "${dependencies[@]}"; do
     check_dependency "$dep"
@@ -98,5 +99,13 @@ for cmd in "${commands[@]}"; do
     chmod +x Commands/$cmd
     sudo mv Commands/$cmd /usr/local/bin/
 done
+
+rm -rf Appearence
+rm -rf README.md
+rm -rf ThingsToDo
+rm -rf Commands
+
+log "Installation complete!"
+
 
 log "Installation complete!"
