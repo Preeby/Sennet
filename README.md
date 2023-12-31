@@ -1,5 +1,5 @@
 
-![Title Image](Appearence/title.png)
+![Title Image](Appearence/Title.png)
 
 # What Is Sennet?
 A simpler way to use pentesting tools! Sennet is a group of commands that takes things like NMAP, aircrack-ng, and more all into simpler and faster commands to use!
