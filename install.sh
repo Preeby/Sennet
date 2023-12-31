@@ -102,7 +102,6 @@ done
 
 rm -rf Appearence
 rm -rf README.md
-rm -rf ThingsToDo
 rm -rf Commands
 
 log "Installation complete!"
