@@ -25,3 +25,7 @@ sennet
 ```
 
 to understand how to use it!
+
+# Future Updates / Reminders for Myself
+
+$(cat ThingsToDo)
