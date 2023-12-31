@@ -1,5 +1,6 @@
-
-![Title Image](Appearence/Title.png)
+<p align="center">
+  <img src="Appearence/Title.png" alt="Title Image">
+</p>
 
 # What Is Sennet?
 A simpler way to use pentesting tools! Sennet is a group of commands that takes things like NMAP, aircrack-ng, and more all into simpler and faster commands to use!
