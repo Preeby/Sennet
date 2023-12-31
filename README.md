@@ -1,5 +1,5 @@
 # Sennet
-A simpler way to use pentesting tools! Sennet is a group of commands that takes things like NMAP, aircrack-ng, and more into simpler and faster commands to use!
+A simpler way to use pentesting tools! Sennet is a group of commands that takes things like NMAP, aircrack-ng, and more all into simpler and faster commands to use!
 This is a great repo for newer pentesters and veterans alike! Feel free to leave your thoughts, comments, or suggestions!
 
 # Install
