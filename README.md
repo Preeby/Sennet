@@ -10,6 +10,19 @@ This is a great repo for newer pentesters and veterans alike! Feel free to leave
 
 Being a pentester of Kali for a few years, I've taken more liking to tools such as wifite which are much simpler and user friendly, making accessibility much easier. Having both a colorful and consise user interface is preferred to many then simple white text without even telling you what the issue is. Not only that but it allows no room for error when it comes to syntax, Sennet gives a much more direct userinterface with automatic error detection!
 
+# Requirements
+
+## Arch
+Installed the Blackarch repo from here
+```
+https://github.com/BlackArch/blackarch-installer
+```
+And the insall script will work. (Going to modify install.sh to make this automatic)
+
+## Other Depos
+Just run install.sh!
+(Will update later for more specific requirements for other distros, please comment if your distro doesn't work!)
+
 # How To Install
 
 Run the following commands to install Sennet:
