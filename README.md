@@ -9,7 +9,7 @@ Run the following commands to install Sennet:
 ```
 git clone https://github.com/Preeby/Sennet/
 cd Sennet
-chmod +X install.sh
+chmod +x install.sh
 sudo ./install.sh
 ```
 
