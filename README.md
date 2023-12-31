@@ -29,7 +29,11 @@ to understand how to use it!
 # Future Updates / Reminders for Myself
 
 -Netdeauth
+
 -IPv6 Suppot and more custom flags for commands
+
 -Bug Fixes
+
 -Automatic Error Repair/Report
+
 -Better User Interface
