@@ -1,20 +1,12 @@
 #!/bin/bash
 
-TMP_DIR=$(mktemp -d)
-
 log() {
     echo "[INFO] $1"
 }
 
 error() {
     echo "[ERROR] $1" >&2
-    cleanup_and_exit 1
-}
-
-cleanup_and_exit() {
-    log "Cleaning up..."
-    rm -rf "$TMP_DIR"
-    exit $1
+    exit 1
 }
 
 check_root() {
@@ -49,8 +41,9 @@ check_dependency() {
             ;;
     esac
 
-    if command -v "$dep" > /dev/null 2>&1; then
+    if [ -x "/usr/bin/$dep" ]; then
         log "$dep is already installed."
+        return 0  # Dependency is installed
     else
         log "$dep is not installed. Trying to install $package_name."
         install_package "$package_name"
@@ -74,13 +67,13 @@ install_package() {
     case $DISTRIBUTION in
         "debian" | "ubuntu" | "kali" | "raspbian")
             apt-get update
-            apt-get install -y --no-install-recommends "$package"
+            apt-get install -y $package
             ;;
         "fedora" | "centos" | "redhat")
-            dnf install -y "$package"
+            dnf install -y $package
             ;;
         "arch" | "manjaro" | "antergos" | "artix")
-            pacman -Syu --noconfirm "$package"
+            pacman -Syu --noconfirm $package
             ;;
         *)
             error "Unknown Linux distribution! Please install the required dependencies manually."
@@ -88,39 +81,23 @@ install_package() {
     esac
 }
 
-install_commands() {
-    log "Installing commands..."
-    local commands=('netdos' 'netpulse' 'sennet' 'sennet_version' 'sennet_update')
-
-    for cmd in "${commands[@]}"; do
-        local cmd_path="$TMP_DIR/$cmd"
-        local link_path="/usr/bin/$cmd"
-
-        chmod +x "Commands/$cmd"
-
-        if [ -e "$link_path" ]; then
-            log "Symbolic link for $cmd already exists. Skipping..."
-        else
-            mv "Commands/$cmd" "$cmd_path"
-            ln -s "$cmd_path" "$link_path"
-        fi
-    done
-}
-
-trap cleanup_and_exit EXIT
-
 check_root
 detect_distribution
 
 # List of dependencies
 dependencies=('nmap' 'hping' 'dnsutils' 'iw')
-# Install these if they don't exist!
+# Install these if it doesn't automatically!
 
 for dep in "${dependencies[@]}"; do
     check_dependency "$dep"
 done
 
-install_commands
+# List of commands to install
+commands=('netdos' 'netpulse' 'sennet' 'sennet_update' 'sennet_version')
+
+for cmd in "${commands[@]}"; do
+    chmod +x Commands/$cmd
+    sudo mv Commands/$cmd /usr/local/bin/
+done
 
 log "Installation complete!"
-
