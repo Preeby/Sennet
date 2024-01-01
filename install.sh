@@ -51,7 +51,6 @@ check_dependency() {
 
     if command -v "$dep" > /dev/null 2>&1; then
         log "$dep is already installed."
-        return 0  # Dependency is installed
     else
         log "$dep is not installed. Trying to install $package_name."
         install_package "$package_name"
@@ -75,13 +74,13 @@ install_package() {
     case $DISTRIBUTION in
         "debian" | "ubuntu" | "kali" | "raspbian")
             apt-get update
-            apt-get install -y --no-install-recommends $package
+            apt-get install -y --no-install-recommends "$package"
             ;;
         "fedora" | "centos" | "redhat")
-            dnf install -y $package
+            dnf install -y "$package"
             ;;
         "arch" | "manjaro" | "antergos" | "artix")
-            pacman -Syu --noconfirm $package
+            pacman -Syu --noconfirm "$package"
             ;;
         *)
             error "Unknown Linux distribution! Please install the required dependencies manually."
@@ -94,9 +93,17 @@ install_commands() {
     local commands=('netdos' 'netpulse' 'sennet' 'sennet_version' 'sennet_update')
 
     for cmd in "${commands[@]}"; do
-        chmod +x Commands/"$cmd"
-        mv Commands/"$cmd" "$TMP_DIR"/
-        ln -s "$TMP_DIR"/"$cmd" /usr/bin/
+        local cmd_path="$TMP_DIR/$cmd"
+        local link_path="/usr/bin/$cmd"
+
+        chmod +x "Commands/$cmd"
+
+        if [ -e "$link_path" ]; then
+            log "Symbolic link for $cmd already exists. Skipping..."
+        else
+            mv "Commands/$cmd" "$cmd_path"
+            ln -s "$cmd_path" "$link_path"
+        fi
     done
 }
 
@@ -107,7 +114,7 @@ detect_distribution
 
 # List of dependencies
 dependencies=('nmap' 'hping' 'dnsutils' 'iw')
-# Install these if it doesn't automatically!
+# Install these if they don't exist!
 
 for dep in "${dependencies[@]}"; do
     check_dependency "$dep"
@@ -116,3 +123,4 @@ done
 install_commands
 
 log "Installation complete!"
+
