@@ -14,6 +14,8 @@ elif [[ "$1" == "netdos" ]]; then
     echo -e "\nNetdos is a command which uses hping3 to perform a pentesting attack known as a Denial of Service attack."
     echo -e "\nIf you do not know the IP or port you wish to flood, please use netpulse on your target."
     echo -e "\nUsage: netdos [ip] [port]"
+    echo -e "\nFlags: [-o]"
+    echo -e "\n-o: Skips checking if the IP and Port are online."
 else
     show_help
 fi
