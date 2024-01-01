@@ -85,7 +85,7 @@ check_root
 detect_distribution
 
 # List of dependencies
-dependencies=('nmap' 'hping' 'dnsutils')
+dependencies=('nmap' 'hping' 'dnsutils' 'iw')
 # Install these if it doesn't automatically!
 
 for dep in "${dependencies[@]}"; do
