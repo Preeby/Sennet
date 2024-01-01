@@ -100,11 +100,4 @@ for cmd in "${commands[@]}"; do
     sudo mv Commands/$cmd /usr/local/bin/
 done
 
-rm -rf Appearence
-rm -rf README.md
-rm -rf Commands
-
-log "Installation complete!"
-
-
 log "Installation complete!"
