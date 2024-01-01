@@ -111,7 +111,7 @@ commands=('netdos' 'netpulse' 'sennet' 'sennet_update' 'sennet_version' 'sennet_
 
 for cmd in "${commands[@]}"; do
     chmod +x Commands/$cmd
-    sudo mv Commands/$cmd ~/usr/local/bin/
+    sudo mv Commands/$cmd /usr/local/bin/
 done
 
 log "Installation complete!"
