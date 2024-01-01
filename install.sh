@@ -93,7 +93,7 @@ for dep in "${dependencies[@]}"; do
 done
 
 # List of commands to install
-commands=('netdos' 'netpulse' 'sennet' 'sennet_update' 'sennet_version')
+commands=('netdos' 'netpulse' 'sennet' 'sennet_update' 'sennet_version' 'sennet_uninstall')
 
 for cmd in "${commands[@]}"; do
     chmod +x Commands/$cmd
