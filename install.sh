@@ -84,20 +84,34 @@ install_package() {
 check_root
 detect_distribution
 
-# List of dependencies
+# Your list of dependencies
 dependencies=('nmap' 'hping' 'dnsutils' 'iw')
-# Install these if it doesn't automatically!
 
+# Install these if it doesn't automatically!
 for dep in "${dependencies[@]}"; do
     check_dependency "$dep"
 done
 
-# List of commands to install
+# Temporary directory for cloning
+TEMP_DIR=$(mktemp -d)
+
+git clone --depth=1 --branch "${RELEASE_TAG}" "${REPO_URL}.git" "${TEMP_DIR}"
+
+cd "${TEMP_DIR}" || exit 1
+
+chmod +x install.sh
+
+sudo ./install.sh
+
+cd -
+
+rm -r "${TEMP_DIR}"
+
 commands=('netdos' 'netpulse' 'sennet' 'sennet_update' 'sennet_version' 'sennet_uninstall')
 
 for cmd in "${commands[@]}"; do
     chmod +x Commands/$cmd
-    sudo mv Commands/$cmd /usr/local/bin/
+    sudo mv Commands/$cmd ~/usr/local/bin/
 done
 
 log "Installation complete!"
