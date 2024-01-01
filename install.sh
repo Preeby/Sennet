@@ -96,7 +96,7 @@ install_commands() {
     for cmd in "${commands[@]}"; do
         chmod +x Commands/"$cmd"
         mv Commands/"$cmd" "$TMP_DIR"/
-        ln -s "$TMP_DIR"/"$cmd" /usr/local/bin/
+        ln -s "$TMP_DIR"/"$cmd" /usr/bin/
     done
 }
 
