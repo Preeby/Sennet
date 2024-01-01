@@ -84,6 +84,11 @@ install_package() {
 check_root
 detect_distribution
 
+LATEST_VERSION=$(curl -sI "${REPO_URL}/releases/latest" | grep -i 'location' | awk -F '/' '{print $NF}' | tr -d '\r\n')
+CURRENT_VERSION="v1.3"
+REPO_URL="https://github.com/Preeby/Sennet"
+RELEASE_TAG=$(curl -sI "${REPO_URL}/releases/latest" | grep -i 'location' | awk -F '/' '{print $NF}' | tr -d '\r\n')
+
 # Your list of dependencies
 dependencies=('nmap' 'hping' 'dnsutils' 'iw')
 
