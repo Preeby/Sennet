@@ -1,12 +1,20 @@
 #!/bin/bash
 
+TMP_DIR=$(mktemp -d)
+
 log() {
     echo "[INFO] $1"
 }
 
 error() {
     echo "[ERROR] $1" >&2
-    exit 1
+    cleanup_and_exit 1
+}
+
+cleanup_and_exit() {
+    log "Cleaning up..."
+    rm -rf "$TMP_DIR"
+    exit $1
 }
 
 check_root() {
@@ -41,7 +49,7 @@ check_dependency() {
             ;;
     esac
 
-    if [ -x "/usr/bin/$dep" ]; then
+    if command -v "$dep" > /dev/null 2>&1; then
         log "$dep is already installed."
         return 0  # Dependency is installed
     else
@@ -67,7 +75,7 @@ install_package() {
     case $DISTRIBUTION in
         "debian" | "ubuntu" | "kali" | "raspbian")
             apt-get update
-            apt-get install -y $package
+            apt-get install -y --no-install-recommends $package
             ;;
         "fedora" | "centos" | "redhat")
             dnf install -y $package
@@ -81,6 +89,19 @@ install_package() {
     esac
 }
 
+install_commands() {
+    log "Installing commands..."
+    local commands=('netdos' 'netpulse' 'sennet' 'sennet_version' 'sennet_update')
+
+    for cmd in "${commands[@]}"; do
+        chmod +x Commands/"$cmd"
+        mv Commands/"$cmd" "$TMP_DIR"/
+        ln -s "$TMP_DIR"/"$cmd" /usr/local/bin/
+    done
+}
+
+trap cleanup_and_exit EXIT
+
 check_root
 detect_distribution
 
@@ -92,12 +113,6 @@ for dep in "${dependencies[@]}"; do
     check_dependency "$dep"
 done
 
-# List of commands to install
-commands=('netdos' 'netpulse' 'sennet')
-
-for cmd in "${commands[@]}"; do
-    chmod +x Commands/$cmd
-    sudo mv Commands/$cmd /usr/local/bin/
-done
+install_commands
 
 log "Installation complete!"

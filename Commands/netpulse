@@ -13,6 +13,23 @@ echo -e "\033[1;35m
 ================================================================================\033[0m"
 }
 
+check_sennet_update() {
+    REPO_URL="https://github.com/Preeby/Sennet"
+    LATEST_VERSION=$(curl -sI "${REPO_URL}/releases/latest" | grep -i 'location' | awk -F '/' '{print $NF}' | tr -d '\r\n')
+    
+    CURRENT_VERSION=$(grep -oP 'CURRENT_VERSION="\K[^"]+' sennet_update)
+
+    if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
+        echo -e "\e[33mWarning: Sennet is not up to date!\e[0m"
+        echo -e "\e[33mYour current version: ${CURRENT_VERSION}\e[0m"
+        echo -e "\e[33mLatest version: ${LATEST_VERSION}\e[0m"
+        echo -e "\e[33mPlease run sudo sennet_update as soon as possible!\e[0m"
+    else
+        clear
+    fi
+}
+
+check_sennet_update
 color_banner
 
 loading_spinner() {
@@ -79,7 +96,7 @@ perform_scan() {
         nmap "$nmap_args" "$ip"
     done
 
-    echo -e "\n\033[1;33m\033[4mDo you wish to dig/nslookup?\033[0m"
+    echo -e "\n\033[1;33m\033[4mDo you wish to dig/nslookup to get more information?\033[0m"
     echo -e "\033[1;32m1. Dig\033[0m"
     echo -e "\033[1;32m2. Nslookup\033[0m"
     echo -e "\033[1;32m3. Exit\033[0m"

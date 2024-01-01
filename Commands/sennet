@@ -1,8 +1,22 @@
 #!/bin/bash
 
+color_banner() {
+    echo -e "\e[33m\e[7m
+                                                                 
+      ███████╗███████╗███╗   ██╗███╗   ██╗███████╗████████╗      
+▄ ██╗▄██╔════╝██╔════╝████╗  ██║████╗  ██║██╔════╝╚══██╔══╝▄ ██╗▄
+ ████╗███████╗█████╗  ██╔██╗ ██║██╔██╗ ██║█████╗     ██║    ████╗
+▀╚██╔▀╚════██║██╔══╝  ██║╚██╗██║██║╚██╗██║██╔══╝     ██║   ▀╚██╔▀
+  ╚═╝ ███████║███████╗██║ ╚████║██║ ╚████║███████╗   ██║     ╚═╝ 
+      ╚══════╝╚══════╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝   ╚═╝         
+=================================================================\033[0m"
+}
+
+color_banner
+
 function show_help {
     echo -e "\nSennet is used to get help on any command you need."
-    echo -e "\nUsage: sennet [netpulse | netdos]"
+    echo -e "\nUsage: sennet [netpulse | netdos | sennet_update | sennet_version]"
 }
 
 if [[ "$1" == "netpulse" ]]; then
@@ -16,6 +30,11 @@ elif [[ "$1" == "netdos" ]]; then
     echo -e "\nUsage: netdos [ip] [port]"
     echo -e "\nFlags: [-o]"
     echo -e "\n-o: Skips checking if the IP and Port are online."
+elif [[ "$1" == "sennet_update" ]]; then
+    echo -e "\nSennet_update just updates your Sennet package to the most recent version!"
+    echo -e "\nYou will get notices if you do not have the latest version."
+elif [[ "$1" == "sennet_version" ]]; then
+    echo -e "\nSennet_version displays your current version."
 else
     show_help
 fi
