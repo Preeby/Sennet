@@ -89,4 +89,6 @@ target_directory=$(pwd)
 
 sudo rm -r $target_directory
 
+cd ..
+
 echo "Cleanup completed."
