@@ -18,16 +18,18 @@ check_root() {
 remove_commands() {
     log "Removing installed commands..."
 
+    INSTALL_DIR="/usr/local/bin"
     commands=('netdos' 'netpulse' 'sennet' 'sennet_update' 'sennet_version' 'sennet_uninstall')
 
     for cmd in "${commands[@]}"; do
-        rm -f "/usr/local/bin/$cmd"
+        rm -f "$INSTALL_DIR/$cmd"
         log "$cmd removed."
     done
 }
 
 check_root
 
+# Detect distribution if needed (you can remove this part if it's not necessary for uninstallation)
 if [ -f "/etc/os-release" ]; then
     source /etc/os-release
     DISTRIBUTION=$(echo "$ID" | tr '[:upper:]' '[:lower:]')

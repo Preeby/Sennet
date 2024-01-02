@@ -17,36 +17,13 @@ check_root() {
 
 check_dependency() {
     local dep=$1
-    local package_name
 
-    case $dep in
-        "dnsutils" | "bind-tools")
-            case $DISTRIBUTION in
-                "debian" | "ubuntu" | "kali" | "raspbian")
-                    package_name="dnsutils"
-                    ;;
-                "fedora" | "centos" | "redhat")
-                    package_name="bind-utils"
-                    ;;
-                "arch" | "manjaro" | "antergos" | "artix")
-                    package_name="bind-tools"
-                    ;;
-                *)
-                    error "Unknown Linux distribution! Please install the required dependencies manually."
-                    ;;
-            esac
-            ;;
-        *)
-            package_name=$dep
-            ;;
-    esac
-
-    if [ -x "/usr/bin/$dep" ]; then
+    if command -v "$dep" &>/dev/null; then
         log "$dep is already installed."
-        return 0  # Dependency is installed
+        return 0
     else
-        log "$dep is not installed. Trying to install $package_name."
-        install_package "$package_name"
+        log "$dep is not installed. Trying to install $dep."
+        install_package "$dep"
     fi
 }
 
@@ -65,12 +42,10 @@ install_package() {
     local package=$1
 
     case $DISTRIBUTION in
-        "debian" | "ubuntu" | "kali" | "raspbian")
-            apt-get update
-            apt-get install -y $package
-            ;;
-        "fedora" | "centos" | "redhat")
-            dnf install -y $package
+        "debian" | "ubuntu" | "kali" | "raspbian" | "fedora" | "centos" | "redhat")
+            package_manager=$(command -v apt-get || command -v dnf)
+            $package_manager update
+            $package_manager install -y $package
             ;;
         "arch" | "manjaro" | "antergos" | "artix")
             pacman -Syu --noconfirm $package
@@ -84,13 +59,10 @@ install_package() {
 check_root
 detect_distribution
 
-LATEST_VERSION=$(curl -sI "${REPO_URL}/releases/latest" | grep -i 'location' | awk -F '/' '{print $NF}' | tr -d '\r\n')
-CURRENT_VERSION="v1.3"
 REPO_URL="https://github.com/Preeby/Sennet"
-RELEASE_TAG=$(curl -sI "${REPO_URL}/releases/latest" | grep -i 'location' | awk -F '/' '{print $NF}' | tr -d '\r\n')
+RELEASE_TAG=$( l -sI "${REPO_URL}/releases/latest" | grep -i 'location' | awk -F '/' '{print $NF}' | tr -d '\r\n')
 
-# Your list of dependencies
-dependencies=('nmap' 'hping' 'dnsutils' 'iw')
+dependencies=('nmap' 'hping' 'dnsutils' 'iw' 'whois')
 
 # Install these if it doesn't automatically!
 for dep in "${dependencies[@]}"; do
@@ -110,13 +82,19 @@ sudo ./install.sh
 
 cd -
 
-rm -r "${TEMP_DIR}"
-
 commands=('netdos' 'netpulse' 'sennet' 'sennet_update' 'sennet_version' 'sennet_uninstall')
 
 for cmd in "${commands[@]}"; do
-    chmod +x Commands/$cmd
-    sudo mv Commands/$cmd /usr/local/bin/
+    chmod +x "Commands/$cmd"
+
+    if [ -w "/usr/local/bin" ]; then
+        sudo mv "Commands/$cmd" "/usr/local/bin/"
+    elif [ -w "$HOME/bin" ]; then
+        mv "Commands/$cmd" "$HOME/bin/"
+    else
+        error "Unable to install commands. Add $HOME/bin to your PATH or choose another writable directory manually."
+    fi
 done
+rm -r "${TEMP_DIR}"
 
 log "Installation complete!"
