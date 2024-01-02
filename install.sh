@@ -62,7 +62,7 @@ detect_distribution
 REPO_URL="https://github.com/Preeby/Sennet"
 RELEASE_TAG=$( l -sI "${REPO_URL}/releases/latest" | grep -i 'location' | awk -F '/' '{print $NF}' | tr -d '\r\n')
 
-dependencies=('nmap' 'hping' 'dnsutils' 'iw' 'whois')
+dependencies=('nmap' 'hping3' 'dnsutils' 'iw' 'whois')
 
 # Install these if it doesn't automatically!
 for dep in "${dependencies[@]}"; do
