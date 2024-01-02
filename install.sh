@@ -84,9 +84,4 @@ for cmd in "${commands[@]}"; do
 done
 
 log "Installation complete!"
-
-target_directory=$(pwd)
-
-sudo rm -r $target_directory
-
-echo "Cleanup completed."
+log "Currently no auto removal, delete this directory when possible, it is no longer needed."
