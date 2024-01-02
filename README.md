@@ -42,11 +42,3 @@ sennet
 ```
 
 to understand how to use it!
-
-# Future Updates / Reminders for Myself
-
--Netdeauth
-
--Bug Fixes
-
--Automatic Error Repair/Report
