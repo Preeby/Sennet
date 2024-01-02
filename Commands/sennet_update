@@ -9,7 +9,7 @@ if [ -z "$RELEASE_TAG" ]; then
     exit 1
 fi
 
-CURRENT_VERSION="v1.3"
+CURRENT_VERSION="v1.44"
 
 LATEST_VERSION=$(curl -sI "${REPO_URL}/releases/latest" | grep -i 'location' | awk -F '/' '{print $NF}' | tr -d '\r\n')
 
