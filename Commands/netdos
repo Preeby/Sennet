@@ -17,7 +17,7 @@ check_sennet_update() {
     REPO_URL="https://github.com/Preeby/Sennet"
     LATEST_VERSION=$(curl -sI "${REPO_URL}/releases/latest" | grep -i 'location' | awk -F '/' '{print $NF}' | tr -d '\r\n')
     
-    CURRENT_VERSION=$(grep -oP 'CURRENT_VERSION="\K[^"]+' sennet_update)
+    CURRENT_VERSION=$(grep -oP 'CURRENT_VERSION="\K[^"]+' /usr/local/bin/sennet_update)
 
     if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
         echo -e "\e[33mWarning: Sennet is not up to date!\e[0m"
