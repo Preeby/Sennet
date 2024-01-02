@@ -95,6 +95,20 @@ for cmd in "${commands[@]}"; do
         error "Unable to install commands. Add $HOME/bin to your PATH or choose another writable directory manually."
     fi
 done
-rm -r "${TEMP_DIR}"
 
 log "Installation complete!"
+
+# Cleanup: Remove Sennet and its contents
+cleanup() {
+    log "Performing cleanup..."
+    if [ -d "${TEMP_DIR}" ]; then
+        rm -r "${TEMP_DIR}"
+    fi
+
+    if [ -d "${REPO_URL}" ]; then
+        rm -r "${REPO_URL}"
+    fi
+}
+
+# Trap exit signals to ensure cleanup is performed
+trap cleanup EXIT

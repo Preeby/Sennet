@@ -99,7 +99,7 @@ perform_scan() {
     echo -e "\n\033[1;33m\033[4mDo you wish to dig/nslookup to get more information?\033[0m"
     echo -e "\033[1;32m1. Dig\033[0m"
     echo -e "\033[1;32m2. Nslookup\033[0m"
-    echo -e "\033[1;32m3. Nslookup\033[0m"
+    echo -e "\033[1;32m3. Whois\033[0m"
     echo -e "\033[1;32m4. Exit\033[0m"
     echo -en "\033[1;33mEnter: \033[0m"
     read -e -n 1 info
