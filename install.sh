@@ -69,19 +69,6 @@ for dep in "${dependencies[@]}"; do
     check_dependency "$dep"
 done
 
-# Temporary directory for cloning
-TEMP_DIR=$(mktemp -d)
-
-git clone --depth=1 --branch "${RELEASE_TAG}" "${REPO_URL}.git" "${TEMP_DIR}"
-
-cd "${TEMP_DIR}" || exit 1
-
-chmod +x install.sh
-
-sudo ./install.sh
-
-cd -
-
 commands=('netdos' 'netpulse' 'sennet' 'sennet_update' 'sennet_version' 'sennet_uninstall')
 
 for cmd in "${commands[@]}"; do
@@ -98,17 +85,8 @@ done
 
 log "Installation complete!"
 
-# Cleanup: Remove Sennet and its contents
-cleanup() {
-    log "Performing cleanup..."
-    if [ -d "${TEMP_DIR}" ]; then
-        rm -r "${TEMP_DIR}"
-    fi
+target_directory=$(pwd)
 
-    if [ -d "${REPO_URL}" ]; then
-        rm -r "${REPO_URL}"
-    fi
-}
+sudo rm -r $target_directory
 
-# Trap exit signals to ensure cleanup is performed
-trap cleanup EXIT
+echo "Cleanup completed."
