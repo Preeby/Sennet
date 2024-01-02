@@ -32,6 +32,7 @@ git clone https://github.com/Preeby/Sennet/
 cd Sennet
 chmod +x install.sh
 sudo ./install.sh
+cd ..
 ```
 
 The install script should do everything automatically, if not tell me!
